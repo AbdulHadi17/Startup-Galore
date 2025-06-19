@@ -10,7 +10,7 @@ const session = await auth();
 // console.log(session);
   return (
     <>
-    <header className='px-5 py-3 bg-white text-black'>
+    <header className='px-5 py-3 bg-primary-100 text-black'>
         <nav className='flex justify-between items-center'>
 <Link href={'/'}>
 <Image src="/logo.png" width={144} height={36} alt="logo" />
