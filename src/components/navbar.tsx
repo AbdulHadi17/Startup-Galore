@@ -41,7 +41,7 @@ const session = await auth();
       'use server'
       await signIn();
     }}>
-      <button className='' type='submit'>LogIn</button>
+      <button className='hover:cursor-pointer' type='submit'>LogIn</button>
     </form>
     </>)
   }
