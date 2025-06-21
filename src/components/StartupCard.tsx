@@ -4,10 +4,13 @@ import { formatLocaleDateUS } from '@root/utils';
 import { Eye } from 'lucide-react';
 import Image from 'next/image';
 import { Button } from './ui/button';
+import { Author, Startup } from "@/sanity/types";
 
-const StartupCard = ({post}:{post:StartupTypeCard}) => {
+export type StartupCardType = Omit<Startup, "author"> & {author?:Author};
 
-const {title,category,description,image,_id:_postId , views, _createdAt , author:{_id:_authorId , name}} = post;
+const StartupCard = ({post}:{post:StartupCardType}) => {
+
+const {title,category,description,image,_id:_postId , views, _createdAt , author} = post;
 
   return (
     <li className='bg-white border-[5px] border-black py-6 px-5 rounded-[22px] shadow-200 hover:border-[#EE2B69] transition-all duration-500 hover:shadow-300 hover:bg-[#FFE8F0]'>
@@ -25,14 +28,14 @@ const {title,category,description,image,_id:_postId , views, _createdAt , author
     <div className='mt-5 flex items-center justify-between'>
 
         <div className='flex-1'>
-            <Link href={`/users/${_authorId}`}>
-            <p className='line-clamp-1 font-medium text-[16px] text-black'>{name}</p>
+            <Link href={`/users/${author?._id}`}>
+            <p className='line-clamp-1 font-medium text-[16px] text-black'>{author?.name}</p>
             </Link>
             <Link href={`/startups/${_postId}`}>
             <p className='font-semibold text-[26px] text-black line-clamp-1'>{title}</p>
             </Link>
         </div>
-        <Link href={`/users/${_authorId}`}>
+        <Link href={`/users/${author?._id}`}>
         <Image src={'https://placehold.co/60x60'} alt='profilePic' height={60} width={60} className='rounded-full'/>
         </Link>
     </div>
@@ -46,7 +49,7 @@ const {title,category,description,image,_id:_postId , views, _createdAt , author
     </Link>
 
     <div className='flex justify-between items-center mt-5'>
-        <Link href={`/?query=${category.toLowerCase()}`}>
+        <Link href={`/?query=${category?.toLowerCase()}`}>
         <p className='font-medium text-[16px] text-black'>{category}</p>
         </Link>
 
