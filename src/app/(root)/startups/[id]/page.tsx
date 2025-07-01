@@ -5,15 +5,23 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import React from 'react'
+import markdownit from 'markdown-it'
+import { Suspense } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
+import View from '@/components/view';
 
+const md = markdownit();
 
 const Page = async ({params}:{params:Promise<{id:string}>}) => {
+
 
   const id = (await params).id;
 
   const post = await client.fetch(STARTUP_BY_ID_QUERY,{id});
 
   if(!post) return notFound();
+
+  const parsedContent = md.render(post.pitch || '');
 
 
   return (
@@ -52,9 +60,25 @@ const Page = async ({params}:{params:Promise<{id:string}>}) => {
       </div>
       </div>
 
-<h3 className='text-[30px] font-bold text-black'>Pitch Details</h3>
-      
+          <h3 className='text-[30px] font-bold text-black'>Pitch Details</h3>
+          {
+            parsedContent? <>
+              <article 
+              className='prose max-w-4xl font-work-sans break-all'
+              dangerouslySetInnerHTML={{__html:parsedContent}}/>
+            </>
+            : <>
+            <div className='text-black-100 text-sm font-normal'>No Results</div>
+            </>
+          }
+
       </div>
+      <hr className=' border-dotted bg-zinc-400 max-w-4xl my-10 mx-auto'></hr>
+
+      <Suspense fallback={<Skeleton className='bg-zinc-400 h-10 w-24 rounded-lg fixed bottom-3 right-3'/>}>
+            <View id={id}/>
+      </Suspense>
+      
     </section>
     </>
   )
