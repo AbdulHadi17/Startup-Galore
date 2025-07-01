@@ -9,6 +9,7 @@ import markdownit from 'markdown-it'
 import { Suspense } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import View from '@/components/view';
+import { auth } from '@root/auth';
 
 const md = markdownit();
 
@@ -23,7 +24,9 @@ const Page = async ({params}:{params:Promise<{id:string}>}) => {
 
   const parsedContent = md.render(post.pitch || '');
 
+  const session = await auth();
 
+  console.log(session?.id);
   return (
     <>
     
