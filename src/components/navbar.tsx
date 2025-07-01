@@ -20,7 +20,7 @@ const session = await auth();
   {
     session && session?.user ? 
     (<>
-    <Link href={'/startup/create'}>
+    <Link href={'/startups/create'}>
     <span>Create</span>
     </Link>
 

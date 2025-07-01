@@ -24,9 +24,7 @@ const Page = async ({params}:{params:Promise<{id:string}>}) => {
 
   const parsedContent = md.render(post.pitch || '');
 
-  const session = await auth();
 
-  console.log(session?.id);
   return (
     <>
     
