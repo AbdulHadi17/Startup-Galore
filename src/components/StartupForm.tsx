@@ -10,7 +10,8 @@ import { Send } from 'lucide-react'
 import { formSchema } from '@/lib/validation'
 import {z} from 'zod'
 import { toast } from 'sonner'
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/router'
+import { createPitch } from '@/lib/actions'
 
 const StartupForm = () => {
   
@@ -34,19 +35,17 @@ const handleFormSubmit = async (prevState: any ,formData:FormData)=>{
 
 
         console.log(formValues);
-        // const results = await createIdea(prevState , formData , pitch);
+        const results = await createPitch(prevState , formData , pitch);
 
-        // console.log(results);
+        if(results.status==='SUCCESS'){
+            toast.success('Startup Created Successfully', {
+                description: 'Startup Created Successfully',
+              });
 
-        // if(results.status==='SUCCESS'){
-        //     toast.error('Success', {
-        //         description: 'Startup Created Successfully',
-        //       });
+              router.push(`/startups/${results._id}`);
+        }
 
-        //       router.push(`/startups/${results.id}`);
-        // }
-
-        // return results;
+        return results;
 
     } catch (error) {
         

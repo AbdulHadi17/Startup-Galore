@@ -9,4 +9,9 @@ export function formatLocaleDateUS(date: Date | string): string {
       day: "numeric"
     });
   }
+
+  export function paresdServerActionsTemplate<T>(response:T){
+
+    return JSON.parse(JSON.stringify(response));
+  }
   
