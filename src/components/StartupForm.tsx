@@ -1,23 +1,91 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useActionState, useState } from 'react'
 import { Label } from './ui/label'
 import { Input } from './ui/input'
 import { Textarea } from './ui/textarea'
 import MarkdownEditor from '@uiw/react-markdown-editor';
 import { Button } from './ui/button'
 import { Send } from 'lucide-react'
-import { Span } from 'next/dist/trace'
+import { formSchema } from '@/lib/validation'
+import {z} from 'zod'
+import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 
 const StartupForm = () => {
   
 const [errors,setErrors] = useState<Record<string,string>>({})
 const [pitch, setpitch] = useState('');
+const router = useRouter();
 
-const pending = false;
+
+const handleFormSubmit = async (prevState: any ,formData:FormData)=>{
+
+    try {
+        const formValues = {
+            title: formData.get('title') as string,
+            description: formData.get('description') as string,
+            category: formData.get('category') as string,
+            link: formData.get('link') as string,
+            pitch
+        }
+
+        await formSchema.parseAsync(formValues);
+
+
+        console.log(formValues);
+        // const results = await createIdea(prevState , formData , pitch);
+
+        // console.log(results);
+
+        // if(results.status==='SUCCESS'){
+        //     toast.error('Success', {
+        //         description: 'Startup Created Successfully',
+        //       });
+
+        //       router.push(`/startups/${results.id}`);
+        // }
+
+        // return results;
+
+    } catch (error) {
+        
+            if(error instanceof z.ZodError){
+                const fieldErrors = error.flatten().fieldErrors;
+                setErrors(fieldErrors as unknown as Record<string,string>);
+            
+                toast.error('Error', {
+                    description: 'Validation Failed.',
+                    classNames: {
+                      toast: 'destructive', 
+                    },
+                  });
+
+
+            return {...prevState, error:'Validation Failed',  status: 'ERROR'};
+            }
+
+
+            toast.error('Error', {
+                description: 'An unexpected error has occured.',
+                classNames: {
+                  toast: 'destructive', 
+                },
+              });
+            
+            return {...prevState, error:'An unexpected error has occured',  status: 'ERROR'};
+
+    }
+
+}
+
+const [state , formAction , isPending] = useActionState(handleFormSubmit,{
+    errors:'',
+    status: "INITIAL"
+})
 
     return (
-    <form action={()=>{}} className='max-w-2xl mx-auto bg-white my-10 space-y-8 px-6'>
+    <form action={formAction} className='max-w-2xl mx-auto bg-white my-10 space-y-8 px-6'>
 
         <div>
         <Label htmlFor='title' className='font-bold text-[18px] text-black uppercase'>
@@ -83,8 +151,8 @@ const pending = false;
 
         </div>
 
-        <Button className='text-white bg-[#EE2B69] border-[4px] border-black rounded-full p-5 min-h-[70px] w-full font-bold text-[18px]' type='submit' disabled={pending}>
-                {pending?'Submitting....':'Submit'}
+        <Button className='text-white bg-[#EE2B69] border-[4px] border-black rounded-full p-5 min-h-[70px] w-full font-bold text-[18px]' type='submit' disabled={isPending}>
+                {isPending?'Submitting....':'Submit'}
                 <Send className='size-6 ml-2'/>
         </Button>
 
