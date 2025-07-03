@@ -5,6 +5,8 @@ import { Eye } from 'lucide-react';
 import Image from 'next/image';
 import { Button } from './ui/button';
 import { Author, Startup } from "@/sanity/types";
+import { cn } from '@/lib/utils';
+import { Skeleton } from './ui/skeleton';
 
 export type StartupCardType = Omit<Startup, "author"> & {author?:Author};
 
@@ -36,7 +38,7 @@ const {title,category,description,image,_id:_postId , views, _createdAt , author
             </Link>
         </div>
         <Link href={`/users/${author?._id}`}>
-        <Image src={'https://placehold.co/60x60'} alt='profilePic' height={60} width={60} className='rounded-full'/>
+        <Image src={author?.image || 'https://placehold.co/60x60'} alt='profilePic' height={60} width={60} className='rounded-full'/>
         </Link>
     </div>
 
@@ -63,5 +65,17 @@ const {title,category,description,image,_id:_postId , views, _createdAt , author
     </li>
   )
 }
+
+
+
+export const StartupSkeleton = () => (
+    <>
+    {[0,1,2,3,4].map((i) => {
+       return <li key={cn('skeleton',i)}>
+        <Skeleton className='w-full h-96 rounded-[22px] bg-zinc-400'/>
+       </li>;
+    })}
+    </>
+)
 
 export default StartupCard
